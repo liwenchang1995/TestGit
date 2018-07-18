@@ -390,4 +390,29 @@ public class SysFormFragmentSetServiceImp extends BaseServiceImp implements ISys
 			}
 		}
 	}
+	
+	/**
+	 * 删除历史片段集和历史表单的关系
+	 * @param sysFormFragmentSetHistory 同步的历史片段集
+	 * @param sysFormTemplateHistory 引用的表单模板
+	 */
+	public void deleteRelation(SynchronousContext synchronousContext,SysFormTemplateHistory sysFormTemplateHistory){
+		//同步前引用的历史片段集id
+		String fdId = synchronousContext.getFdRefId();
+		//同步后引用的历史片段集
+		SysFormFragmentSetHistory sysFormFragmentSetHistory = (SysFormFragmentSetHistory)synchronousContext.getSrc();
+		String refId = "";
+		
+		//获取表单所关联的片段集
+		List sysFormFragmentSetHistorys = sysFormTemplateHistory.getSysFormFragmentSetHistorys();
+		
+		for (int i = 0,size = sysFormFragmentSetHistorys.size(); i < size; i++){
+			SysFormFragmentSetHistory fragmenSetHis = (SysFormFragmentSetHistory) sysFormFragmentSetHistorys.get(i);
+			refId = fragmenSetHis.getFdId();
+			if (refId.equals(fdId)){
+				sysFormFragmentSetHistorys.remove(i);
+				sysFormFragmentSetHistorys.add(sysFormFragmentSetHistory);
+			}
+		}
+	}
 }
